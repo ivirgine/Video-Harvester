@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-clock me-2"></i>Scheduled Downloads</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Your scheduled downloads are displayed below.
+                </div>
+                
+                {% if downloads %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Source</th>
+                                <th>Type</th>
+                                <th>Scheduled Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for download in downloads %}
+                            <tr>
+                                <td>{{ download.title or 'Pending info...' }}</td>
+                                <td>{{ download.source|capitalize }}</td>
+                                <td>{{ download.format_type|capitalize }}</td>
+                                <td>{{ download.scheduled_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    {% if download.status == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                    {% elif download.status == 'completed' %}
+                                    <span class="badge bg-success">Completed</span>
+                                    {% elif download.status == 'failed' %}
+                                    <span class="badge bg-danger">Failed</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if download.status == 'pending' %}
+                                    <a href="/cancel_schedule/{{ download.id }}" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    You don't have any scheduled downloads.
+                </div>
+                {% endif %}
+                
+                <div class="mt-3">
+                    <a href="/" class="btn btn-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Downloader
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

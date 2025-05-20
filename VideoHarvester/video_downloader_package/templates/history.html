@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-history me-2"></i>Download History</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Your download history is displayed below.
+                </div>
+                
+                {% if downloads %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Title</th>
+                                <th>Resolution</th>
+                                <th>Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for download in downloads %}
+                            <tr>
+                                <td>{{ download.download_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <a href="https://www.youtube.com/watch?v={{ download.video_id }}" target="_blank">
+                                        {{ download.title }}
+                                    </a>
+                                </td>
+                                <td>{{ download.resolution }}</td>
+                                <td>{{ download.file_size }} MB</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    You haven't downloaded any videos yet.
+                </div>
+                {% endif %}
+                
+                <div class="mt-3">
+                    <a href="/" class="btn btn-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Downloader
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

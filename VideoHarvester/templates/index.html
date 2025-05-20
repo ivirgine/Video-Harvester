@@ -1,0 +1,180 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="fas fa-video me-2"></i>Video Downloader</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Paste a video URL from YouTube, Vimeo, Dailymotion and more to download it in various formats.
+                </div>
+                
+                <ul class="nav nav-tabs mb-3" id="videoTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="regular-tab" data-bs-toggle="tab" data-bs-target="#regular" type="button" role="tab" aria-controls="regular" aria-selected="true">
+                            <i class="fas fa-download me-1"></i> Regular Download
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="audio-tab" data-bs-toggle="tab" data-bs-target="#audio" type="button" role="tab" aria-controls="audio" aria-selected="false">
+                            <i class="fas fa-music me-1"></i> Audio Only
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="schedule-tab" data-bs-toggle="tab" data-bs-target="#schedule" type="button" role="tab" aria-controls="schedule" aria-selected="false">
+                            <i class="fas fa-clock me-1"></i> Schedule Download
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="videoTabsContent">
+                    <!-- Regular Download Tab -->
+                    <div class="tab-pane fade show active" id="regular" role="tabpanel" aria-labelledby="regular-tab">
+                        <form id="url-form" class="mb-4">
+                            <div class="input-group">
+                                <select class="form-select flex-grow-0" style="max-width: 150px;" id="source-select">
+                                    <option value="auto" selected>Auto-detect</option>
+                                    <option value="youtube">YouTube</option>
+                                    <option value="vimeo">Vimeo</option>
+                                    <option value="dailymotion">Dailymotion</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="twitter">Twitter</option>
+                                </select>
+                                <input type="url" id="video-url" class="form-control" placeholder="Paste video URL here..." required>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search me-1"></i> Fetch Video
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Audio Only Tab -->
+                    <div class="tab-pane fade" id="audio" role="tabpanel" aria-labelledby="audio-tab">
+                        <form id="audio-form" class="mb-4">
+                            <div class="input-group">
+                                <select class="form-select flex-grow-0" style="max-width: 150px;" id="audio-source-select">
+                                    <option value="auto" selected>Auto-detect</option>
+                                    <option value="youtube">YouTube</option>
+                                    <option value="soundcloud">SoundCloud</option>
+                                    <option value="mixcloud">Mixcloud</option>
+                                </select>
+                                <input type="url" id="audio-url" class="form-control" placeholder="Paste audio URL here..." required>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search me-1"></i> Fetch Audio
+                                </button>
+                            </div>
+                            <div class="form-text text-muted mt-2">
+                                <i class="fas fa-info-circle"></i> Extract audio only from videos (MP3, M4A, etc.)
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Schedule Download Tab -->
+                    <div class="tab-pane fade" id="schedule" role="tabpanel" aria-labelledby="schedule-tab">
+                        <form id="schedule-form" class="mb-4">
+                            <div class="input-group mb-3">
+                                <select class="form-select flex-grow-0" style="max-width: 150px;" id="schedule-source-select">
+                                    <option value="auto" selected>Auto-detect</option>
+                                    <option value="youtube">YouTube</option>
+                                    <option value="vimeo">Vimeo</option>
+                                    <option value="dailymotion">Dailymotion</option>
+                                </select>
+                                <input type="url" id="schedule-url" class="form-control" placeholder="Paste video URL here..." required>
+                                <button type="button" id="schedule-fetch-btn" class="btn btn-secondary">
+                                    <i class="fas fa-search me-1"></i> Fetch Info
+                                </button>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="schedule-date" class="form-label">Schedule Date</label>
+                                    <input type="date" class="form-control" id="schedule-date" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="schedule-time" class="form-label">Schedule Time</label>
+                                    <input type="time" class="form-control" id="schedule-time" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="audio-only-check">
+                                <label class="form-check-label" for="audio-only-check">
+                                    Audio Only
+                                </label>
+                            </div>
+                            
+                            <div id="schedule-info" class="alert alert-secondary d-none mb-3">
+                                <!-- Schedule Info will go here -->
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success" disabled id="schedule-submit-btn">
+                                <i class="fas fa-calendar-plus me-1"></i> Schedule Download
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Loading spinner -->
+                <div id="loading" class="text-center d-none my-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Fetching video information...</p>
+                </div>
+                
+                <!-- Error message area -->
+                <div id="error-message" class="alert alert-danger d-none" role="alert"></div>
+                
+                <!-- Video information -->
+                <div id="video-info" class="d-none">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <img id="video-thumbnail" src="" alt="Video Thumbnail" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-8">
+                            <h4 id="video-title" class="mb-2"></h4>
+                            <p id="video-author" class="mb-2 text-muted"></p>
+                            <div class="d-flex mb-2">
+                                <div class="me-3">
+                                    <i class="fas fa-clock me-1"></i>
+                                    <span id="video-duration"></span>
+                                </div>
+                            </div>
+                            
+                            <h5 class="mt-3">Select Quality to Download:</h5>
+                            <div id="quality-options" class="list-group mb-3"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Download progress -->
+                <div id="download-progress-container" class="d-none mt-4">
+                    <h5>Downloading...</h5>
+                    <div class="progress mb-3">
+                        <div id="download-progress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div id="download-status" class="text-center"></div>
+                </div>
+                
+                <!-- Download complete -->
+                <div id="download-complete" class="d-none mt-4">
+                    <div class="alert alert-success" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Download complete! Your file is ready.
+                    </div>
+                    <div class="text-center">
+                        <a id="download-link" href="#" class="btn btn-success">
+                            <i class="fas fa-download me-2"></i>
+                            Download Video
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

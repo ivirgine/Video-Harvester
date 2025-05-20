@@ -1,0 +1,8 @@
+email-validator
+Flask
+Flask-SQLAlchemy
+gunicorn
+psycopg2-binary
+pytube
+requests
+yt-dlp

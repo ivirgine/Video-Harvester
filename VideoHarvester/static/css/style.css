@@ -1,0 +1,76 @@
+/* Custom styles for the YouTube downloader */
+
+/* Body and general styles */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Video card styling */
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.card-header {
+    font-weight: 500;
+}
+
+/* Thumbnail styling */
+#video-thumbnail {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Quality options styling */
+#quality-options .list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+#quality-options .list-group-item:hover {
+    background-color: var(--bs-primary-bg-subtle);
+}
+
+#quality-options .download-btn {
+    transition: transform 0.2s;
+}
+
+#quality-options .download-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Progress bar styling */
+.progress {
+    height: 25px;
+    border-radius: 8px;
+}
+
+/* Animation for loading and transitions */
+.fade-in {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Download button pulse animation */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+#download-link {
+    animation: pulse 2s infinite;
+}
